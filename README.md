@@ -26,4 +26,4 @@ MIT
 Author Information
 ------------------
 
-Brian O'Reilly
+Brian O'Reilly / Merchant Lynx Services
