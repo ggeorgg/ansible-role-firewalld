@@ -1,0 +1,9 @@
+---
+# defaults file for ansible-role-firewalld
+
+firewalld_default_zone: "public"
+firewalld_allowed_services:
+  - ssh
+firewalld_allowed_ports: []
+firewalld_allowed_forward_ports: []
+firewalld_rich_rules: []
