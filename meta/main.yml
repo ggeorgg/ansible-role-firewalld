@@ -2,6 +2,7 @@
 dependencies: []
 
 galaxy_info:
+  role_name: firewalld
   author: "Brian O'Reilly"
   description: Configure firewalld for RHEL7 and CentOS7
   company: "Merchant Lynx Services"
