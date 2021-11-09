@@ -1,0 +1,84 @@
+---
+- name: Compatibility check
+  fail: msg="This role only works on Debian and Archlinux systems"
+  when: ansible_os_family != "Debian" and ansible_os_family != "Archlinux"
+
+- name: Installing ufw packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ ufw_packages }}"
+  tags:
+    - networking
+    - ufw
+    - ufw-install
+
+- name: Resetting firewall
+  ufw:
+    state: reset
+  when: ufw_reset|bool
+  changed_when: false
+  tags:
+    - networking
+    - ufw
+    - ufw-reset
+
+- name: Configuring port/protocol/network rules
+  ufw:
+    comment: "{{ item.comment | default(omit) }}"
+    delete: "{{ item.delete | default(omit) }}"
+    direction: "{{ item.direction | default(omit) }}"
+    from_ip: "{{ item.from_ip | default(omit) }}"
+    from_port: "{{ item.from_port | default(omit) }}"
+    insert: "{{ item.insert | default(omit) }}"
+    interface: "{{ item.interface | default(omit) }}"
+    log: "{{ item.log | default(omit) }}"
+    logging: "{{ item.logging | default(omit) }}"
+    name: "{{ item.name | default(omit) }}"
+    policy: "{{ item.policy | default(omit) }}"
+    port: "{{ item.port | default(omit) }}"
+    proto: "{{ item.proto | default(omit) }}"
+    rule: "{{ item.rule | default('allow') }}"
+    state: "{{ item.state | default(omit) }}"
+    to_ip: "{{ item.to_ip | default(omit) }}"
+    to_port: "{{ item.to_port | default(omit) }}"
+    route: "{{ item.route | default(omit) }}"
+  with_items: "{{ ufw_rules }}"
+  tags:
+    - networking
+    - ufw
+    - ufw-config  
+
+- name: Configuring application rules
+  ufw:
+    name: "{{ item.name }}"
+    rule: "{{ item.rule if item.rule is defined else 'allow' }}"
+    from_ip: "{{ item.from_ip | default(omit)  }}"
+  with_items: "{{ ufw_applications }}"
+  tags:
+    - networking
+    - ufw
+    - ufw-config  
+
+- name: Configuring firewall
+  template:
+    src: etc/default/ufw.j2
+    dest: /etc/default/ufw
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload ufw
+  tags:
+    - networking
+    - ufw
+    - ufw-config
+
+
+- name: Configuring service
+  ufw:
+    state: "{{ ufw_state }}"
+    logging: "{{ ufw_logging }}"
+  tags:
+    - networking
+    - ufw
+    - ufw-service

@@ -1,5 +1,13 @@
 ---
-# handlers file for ansible-role-firewalld
+- name: restart firewall
+  service: 
+    name: firewall 
+    state: restarted
 
 - name: Reload firewalld
   command: firewall-cmd --reload
+  
+- name: reload ufw
+  ufw:
+    state: reloaded
+  when: ufw_state == 'enabled'  

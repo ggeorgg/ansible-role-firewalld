@@ -1,0 +1,11 @@
+---
+default_system_firewall: firewalld
+firewall_default_zone: "public"
+firewall_allowed_services:
+  - ssh
+  - http
+  - https
+  - mosh
+firewall_allowed_ports: []
+firewall_allowed_forward_ports: []
+firewall_rich_rules: []
